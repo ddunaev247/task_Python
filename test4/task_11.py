@@ -11,3 +11,10 @@ while i <= dl_list - 1:
         y += 1
 
 print(y)
+list1 = [1, 2, 4, 3, 5, 8, 24]
+sh = 0
+
+for elem in list1:
+    if elem % 2 == 0:
+        sh += 1
+print(sh)
