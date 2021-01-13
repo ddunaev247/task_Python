@@ -12,6 +12,13 @@ while i <= s - 1:
     val[y] = val.pop(l[i])
     i += 1
 print(val)
-
+val1 = {'test': 'test_value_1', 'europe': 'eur_2', 'dollar':'usd_3', 'ruble': 'rub_4'}
+keys = list(val1.keys())
+i = 0
+for key in keys:
+    new_keys = f'{key}{len(keys[i])}'
+    val1[new_keys] = val1.pop(key)
+    i += 1
+print("primer2:",val1)
 
 
