@@ -11,5 +11,15 @@ while i < n_el - 2:
     list.append(sum)
     i += 1
 print(list)
+f1 = 1
+f2 = 1
+list1 = [f1, f2]
+n = 15
+for i in range(3, n + 1):
+    temp = f1
+    f1 = f2
+    f2 = temp + f1
+    list1.append(f2)
+print(list1)
 
 
