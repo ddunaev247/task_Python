@@ -1,51 +1,51 @@
 # Написать модуль, содержащий 12 функций по переводу:
 
-def konver_sm(per):
+def konver_sm(per: int) -> float:
     return f'Дюймы в сантиметры: {per * 2.54}'
 
 
-def konver_dm(per):
+def konver_dm(per: int) -> float:
     return f'Сантиметры в дюймы: {per / 2.54}'
 
 
-def konver_km(per):
+def konver_km(per: int) -> float:
     return f'Мили в километры: {per * 1.609}'
 
 
-def konver_ml(per):
+def konver_ml(per: int) -> float:
     return f'Километры в мили: {per / 1.609}'
 
 
-def konver_kg(per):
+def konver_kg(per: int) -> float:
     return f'Фунты в килограммы: {per / 2.205}'
 
 
-def konver_fn(per):
+def konver_fn(per: int) -> float:
     return f'Килограммы в фунты: {per * 2.205}'
 
 
-def konver_gr(per):
+def konver_gr(per: int) -> float:
     return f'Унции в граммы: {per * 28.35}'
 
 
-def konver_un(per):
+def konver_un(per: int) -> float:
     return f'Граммы в унции: {per / 28.35}'
 
 
-def konver_lt(per):
+def konver_lt(per: int) -> float:
     return f'Галлон в литры: {per * 3.785}'
 
 
-def konver_gl(per):
+def konver_gl(per: int) -> float:
     return f'Литры в галлоны: {per / 3.785}'
 
 
-def konver_litr(per):
-    return f'Пинты в литры: {per / 2.113}'
+def konver_litr(per: int) -> float:
+    return f'Пинты в литры: {per / 1.76}'
 
 
-def konver_pint(per):
-    return f'Литры в пинты: {per / 2.113} '
+def konver_pint(per: int) -> float:
+    return f'Литры в пинты: {per * 1.76} '
     
     
 text = '''
