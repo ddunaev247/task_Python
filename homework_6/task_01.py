@@ -45,7 +45,7 @@ def konver_litr(per: int) -> float:
 
 
 def konver_pint(per: int) -> float:
-    return f'Литры в пинты: {per * 2.113} '
+    return f'Литры в пинты: {per * 1.76} '
     
     
 text = '''
