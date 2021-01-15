@@ -46,3 +46,35 @@ def konver_litr(per):
 
 def konver_pint(per):
     return f'Литры в пинты: {per / 2.113} '
+    
+    
+text = '''
+0.Выход из программы
+1.Дюймы в сантиметры
+2.Сантиметры в дюймы
+3.Мили в километры
+4.Километры в мили
+5.Фунты в килограммы
+6.Килограммы в фунты
+7.Унции в граммы
+8.Граммы в унции
+9.Галлон в литры
+10.Литры в галлоны 
+
+введите номер функции: '''
+def result():
+    dir = {1: konver_sm, 2: konver_dm, 3: konver_km, 4: konver_ml,5: konver_kg, 6: konver_fn, 7: konver_gr,
+           8: konver_un, 9: konver_lt, 10: konver_gl, 11: konver_litr, 12: konver_pint}
+    while True:
+        fun_sel = int(input(text))
+        if fun_sel == 0: break
+        if fun_sel < 11:
+            chislo = int(input('введите число: '))
+            print(dir.get(fun_sel)(chislo))
+        else:
+            print('Вы ввели номер несуществующей функции')
+
+
+
+if __name__ == "__main__":
+   result()
