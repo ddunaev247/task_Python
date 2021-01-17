@@ -63,6 +63,12 @@ text = '''
 
 введите номер функции: '''
 def result():
+"""This function presents an interface for the user to work with the conversion
+
+   Input
+   -------
+   The user enters the number of the required conversion function, as well as the number
+   to which the conversion is applied """
     dir = {1: konver_sm, 2: konver_dm, 3: konver_km, 4: konver_ml,5: konver_kg, 6: konver_fn, 7: konver_gr,
            8: konver_un, 9: konver_lt, 10: konver_gl, 11: konver_litr, 12: konver_pint}
     while True:
