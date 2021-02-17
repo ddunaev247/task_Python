@@ -1,9 +1,8 @@
 # Дан текстовый файл, содержащий различные даты. Каждая дата - это число, месяц и год. Найти самую раннюю дату.
 
-import time
-import typing
+import datetime
 
-def op_file() ->time.struct_time:
+def op_file() -> datetime.date:
     """ this function finds the earliest date in a text file
 
     the function opens the file for reading and finds the earliest in the environment,
@@ -13,13 +12,12 @@ def op_file() ->time.struct_time:
     file = open('data.txt','r')
     line = file.readlines()
     line = [line.rstrip() for line in line]
-    date_buf = time.strptime('31129999','%d%m%Y')
-    for date_line in line:
-        date_line = time.strptime(date_line,'%d%m%Y')
-        if date_line <= date_buf:
-            date_buf = date_line
-    file.close()
-    return time.strftime('%d-%m-%Y', date_buf)
+    date_buf = datetime.datetime(9999,12,31)
+    for date in line:
+        date = datetime.datetime.strptime(date, '%Y.%m.%d')
+        if date < date_buf:
+            date_buf = date
+    return date_buf.date()
 
 
 def main():
@@ -27,5 +25,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
