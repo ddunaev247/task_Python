@@ -3,21 +3,27 @@
 def fun_y(per: int) -> int:
     """This function will return the 'y' value for 'x' from the range
 
+
+    Function:
+    y = x2 at -5 <= x <= 5;
+    y = 2 * | x | -1 for x <-5;
+    y = 2x for x> 5.
+
     Parameters
     ----------
     per : int
 
     Result
     ----------
-    The result is a number, depending on 'x' """
-    result_y = 0
-    if per <= 5 and per >= -5:
-        result_y = per ** 2
-    elif per < -5:
-        result_y = 2 * abs(per) - 1
+    The result is a number, depending on 'x'
+    """
+
+    assert type(per) != str, 'function passed not a number'
+    if per < -5:
+        return 2 * abs(per) - 1
     elif per > 5:
-        result_y = per * 2
-    return result_y
+        return per * 2
+    return per ** 2
 
 
 def result():
