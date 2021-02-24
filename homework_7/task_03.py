@@ -15,22 +15,24 @@ def translate_to_2(per: int) -> str:
     Result
     ----------
     The result will be a number in the 2nd system written as a string"""
+
     number_in_2 = ''
+    assert type(per) == int, 'function passed not a number'
     while per > 0:
         number_in_2 = str(per % 2) + number_in_2
         per = per // 2
-    print(number_in_2)
+    return number_in_2
 
 
-def result():
+def result() -> None:
     """This function shows the result and checks the number"""
     while True:
-        number = input('введите число: ')
+        number = input('enter the number: ')
         if number == '0': break
         if number.isdigit() == False:
-            print('вы ввели не число')
+            print('you entered not a number')
         else:
-            translate_to_2(int(number))
+            print(translate_to_2(int(number)))
 
 
 if __name__ == "__main__":
