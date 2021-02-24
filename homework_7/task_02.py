@@ -2,7 +2,7 @@
 # которое читается одинаково слева направо и справа налево. (Определить функцию, позволяющую
 # распознавать слова палиндромы.)
 
-def polindrom():
+def polindrom() -> int:
     """This function show palindromes and their number in a line
 
     The string is split into words, after each word is checked for compliance with the condition
@@ -19,15 +19,15 @@ def polindrom():
     words = []
     count = 0
     stoka = str(input('введите строку: '))
+    assert len(stoka) != 0, 'the list of strings must not be empty'
     for word in stoka.split():
         if word == word[::-1]:
             words.append(word)
             count += 1
     if count == 0:
-        print('нет полиндромов')
-    else:
-        print(f'слова полиндромы:{words}, количество полиндоромов: {count}')
+        return 0
+    return count
 
 
 if __name__ == "__main__":
-    polindrom()
+    print(polindrom())
