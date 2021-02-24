@@ -14,21 +14,24 @@ def factorial2(per: int) -> int:
 
     """
     fact2 = 1
+    assert type(per) == int, 'function passed not a number'
     if per % 2 == 0:
         for i in range(2,per + 1, 2):
             fact2 *= i
     else:
         for i in range(1,per + 1, 2):
             fact2 *= i
-    print(f'{per}!!= {fact2}')
 
+    return fact2
 
-def result():
+def result() -> list:
     """This function shows the result for 5 random numbers"""
-    num_list = [randint(1, 20) for i in range(5)]
+    num_list = [6, 4, 9, 7, 5]
+    result_list =[]
     for num in num_list:
-        factorial2(num)
-
+        result_list.append(factorial2(num))
+    assert result_list == [48, 8, 945, 105, 15], 'not a match of the result'
+    return result_list
 
 if __name__ == "__main__":
-    result()
+    print(result())
