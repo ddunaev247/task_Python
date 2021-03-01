@@ -1,11 +1,6 @@
-# Создать класс Point, описывающий точку(атрибуты: x,y). Создать класс Figure. Создать три дочерних класса
-# Circle(атрибуты: координаты центра(тип Point), радиус; методы: нахождение периметра и площади
-# окружности), Triangle(атрибуты: три точки, методы: нахождение площади и периметра), Square(атрибуты:
-# две точки, методы: нахождение площади и периметра). При необходимости, создавать все
-# необходимые методы, не описанные в задании. Создать список фигур и в цикле подсчитать и вывести
-# площади всех фигур на экран в формате: «Тип фигуры» -> «площадь».
 from abc import ABC,abstractmethod
 from typing import Union
+
 
 class Point:
     """this class describes the point"""
@@ -13,14 +8,16 @@ class Point:
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return '({0}, {1})'.format(self.x, self.y)
+
+
 class Figure(ABC):
     """this class describes a figure
 
     class contains abstract methods:
     calc_perimetr - perimeter calculation
     calc_square - square calculation
-    info_perimetr - displaying information about the perimeter
-    info_square - displaying information about the square
     """
     @abstractmethod
     def calc_perimetr(self):
@@ -30,123 +27,105 @@ class Figure(ABC):
     def calc_square(self):
         pass
 
-    @abstractmethod
-    def info_perimetr(self):
-        perimetr = self.calc_perimetr()
-        print('perimetr = %s' % (perimetr))
-
-    @abstractmethod
-    def info_square(self):
-        square = self.calc_square()
-        print('square = %s' %(square))
 
 class Circle(Figure):
     """this class describes a Circle
 
-    class contains methods:
     calc_perimetr - perimeter calculation
     calc_square - square calculation
-    info_perimetr - displaying information about the perimeter
-    info_square - displaying information about the square
+    >>> a = Point(5,5)
+    >>> cir = Circle(a, 5)
+    >>> cir.calc_perimetr()
+    31.400000000000002
+    >>> cir.calc_square()
+    78.5
     """
+
     def __init__(self, center: Point, r: Union[int, float]):
         self.center = center
         self.r = r
+        self.name = __class__.__name__
 
-    def calc_perimetr(self) -> Union[int, float]:
+    def calc_perimetr(self) -> Union[float, str]:
         if self.r > 0:
             perimetr = 2 * 3.14 * self.r
             return perimetr
         return 'radius must be greater than 0'
 
 
-    def calc_square(self) -> Union[int, float]:
+    def calc_square(self) -> Union[float, str]:
         if self.r > 0:
             square = 3.14 * self.r ** 2
             return square
         return 'radius must be greater than 0'
 
-    def info_perimetr(self):
-        perimetr = self.calc_perimetr()
-        print('Circle = %s' % (perimetr))
-
-    def info_square(self):
-        square = self.calc_square()
-        print('Circle -> %s' %(square))
 
 class Triangle(Figure):
     """this class describes a Triangle
 
-    class contains methods:
     calc_perimetr - perimeter calculation
     calc_square - square calculation
-    info_perimetr - displaying information about the perimeter
-    info_square - displaying information about the square
+
+    >>> point1 = Point(1, 1)
+    >>> point2 = Point(3, 5)
+    >>> point3 = Point(2, 2)
+    >>> trean = Triangle(point1, point2, point3)
+    >>> trean.calc_perimetr()
+    9.048627177541055
+    >>> trean.calc_square()
+    0.6617700427003875
     """
-    __len_katet_ab = None
-    __len_katet_ab = None
-    __len_katet_ca = None
-    __p_perimetr = None
+
     def __init__(self, vertex_a: Point, vertex_b: Point, vertex_c: Point):
         self.vertex_a = vertex_a
         self.vertex_b = vertex_b
         self.vertex_c = vertex_c
-        Triangle.__len_katet_ab = ((self.vertex_b.x - self.vertex_a.x) ** 2 + (self.vertex_b.y - self.vertex_a.y) ** 2) ** 0.5
-        Triangle.__len_katet_bc = ((self.vertex_c.x - self.vertex_b.x) ** 2 + (self.vertex_c.y - self.vertex_b.y) ** 2) ** 0.5
-        Triangle.__len_katet_ca = ((self.vertex_a.x - self.vertex_c.x) ** 2 + (self.vertex_a.y - self.vertex_c.y) ** 2) ** 0.5
+        self.len_katet_ab = ((self.vertex_b.x - self.vertex_a.x) ** 2 + (self.vertex_b.y - self.vertex_a.y) ** 2) ** 0.5
+        self.len_katet_bc = ((self.vertex_c.x - self.vertex_b.x) ** 2 + (self.vertex_c.y - self.vertex_b.y) ** 2) ** 0.5
+        self.len_katet_ca = ((self.vertex_a.x - self.vertex_c.x) ** 2 + (self.vertex_a.y - self.vertex_c.y) ** 2) ** 0.5
+        self.p_perimetr = (self.len_katet_ab + self.len_katet_bc + self.len_katet_ca) / 2
+        self.name = __class__.__name__
 
-    def calc_perimetr(self) -> Union[int, float]:
-        perimetr = Triangle.__len_katet_ab + Triangle.__len_katet_bc + Triangle.__len_katet_ca
+
+    def calc_perimetr(self) -> float:
+        perimetr = self.len_katet_ab + self.len_katet_bc + self.len_katet_ca
         return perimetr
 
-    def calc_square(self) -> Union[int, float]:
-        Triangle.__p_perimetr = (Triangle.__len_katet_ab + Triangle.__len_katet_bc + Triangle.__len_katet_ca) / 2
-        square = (Triangle.__p_perimetr * ((Triangle.__p_perimetr - Triangle.__len_katet_ab) *
-            (Triangle.__p_perimetr - Triangle.__len_katet_bc) * (Triangle.__p_perimetr - Triangle.__len_katet_bc))) ** 0.5
+    def calc_square(self) -> float:
+        square = (self.p_perimetr * ((self.p_perimetr - self.len_katet_ab) *
+            (self.p_perimetr - self.len_katet_bc) * (self.p_perimetr - self.len_katet_bc))) ** 0.5
         return square
-
-    def info_perimetr(self):
-        perimetr = self.calc_perimetr()
-        print('Triangle = %s' % (perimetr))
-
-    def info_square(self):
-        square = self.calc_square()
-        print('Triangle -> %s' %(square))
 
 class Square(Figure):
     """this class describes a Square
 
-    class contains methods:
     calc_perimetr - perimeter calculation
     calc_square - square calculation
-    info_perimetr - displaying information about the perimeter
-    info_square - displaying information about the square
+
+    >>> point2 = Point(3, 5)
+    >>> point3 = Point(2, 2)
+    >>> squar = Square(point2, point3)
+    >>> squar.calc_perimetr()
+    12.649110640673518
+    >>> squar.calc_square()
+    6.324555320336759
     """
-    __side = None
+
     def __init__(self, point_a: Point, point_b: Point):
         self.point_a = point_a
         self.point_b = point_b
-        Square.__side = ((self.point_b.x - self.point_a.x) ** 2 + (self.point_b.y - self.point_a.y) ** 2) ** 0.5
+        self.side = ((self.point_b.x - self.point_a.x) ** 2 + (self.point_b.y - self.point_a.y) ** 2) ** 0.5
+        self.name = __class__.__name__
 
-    def calc_perimetr(self) -> Union[int, float]:
-        perimetr = Square.__side * 4
+    def calc_perimetr(self) -> float:
+        perimetr = self.side * 4
         return perimetr
 
-    def calc_square(self) -> Union[int, float]:
-        square = Square.__side * 2
+    def calc_square(self) -> float:
+        square = self.side * 2
         return square
 
-    def info_perimetr(self):
-        perimetr = self.calc_perimetr()
-        print('Square = %s' % (perimetr))
 
-    def info_square(self):
-        square = self.calc_square()
-        print('Square -> %s' %(square))
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
