@@ -6,12 +6,14 @@
 
 import requests
 import os
-import datetime
+from datetime import datetime
 import argparse
-import sys
-from excepion import StatusError, ContentError
 from requests.exceptions import MissingSchema
+import csv
+from excepion import *
 import doctest
+
+
 
 def valid_status(code: requests) -> bool:
     """function checks for page existence
@@ -19,7 +21,7 @@ def valid_status(code: requests) -> bool:
     True
     """
 
-    if code == 404:
+    if 400 <= code < 600:
         raise StatusError
     return True
 
@@ -29,54 +31,129 @@ def valid_content(content: requests) -> bool:
     True
     """
 
-    if not content == 'image':
+    if content != 'image':
         raise ContentError
     return True
 
-def write_image(file_name: str,req: requests) -> None:
-    """ the function writes the file to the folder images"""
+def valid_flag(flag: str) -> bool:
+    """the function tests the correctness of the received flag
+    >>> valid_flag('1')
+    True
+    """
+
+    if flag.isdigit() == False:
+        raise ValueError
+    return True
+
+def dir_exists() -> None:
+    "the function checks the existence of the directory, if it does not exist - creates it"
 
     if not os.path.isdir('images'):
         os.mkdir('images')
+
+def exist_file(file_name: str) -> bool:
+    "function checks for file existence"
+
+    if os.path.exists(f'images\{file_name}'):
+        return True
+    return False
+
+def create_file_name(req: requests, flag: str) -> str:
+    "the function creates a name for the file"
+
+    name = req.url.split('/')[-1]
+    if exist_file(name) == False or int(flag) == 1:
+        return name
+    else:
+        name = name.split('.')[0] + '_' + datetime.now().time().strftime('%H-%M-%S') + name[-5:]
+        return name
+
+def write_image(file_name: str,req: requests):
+    "the function writes the image to a file"
+
+    dir_exists()
     with open(f'images\{file_name}', 'wb') as file:
         for chunk in req.iter_content(chunk_size=100000):
             file.write(chunk)
 
+def prepare(file_name: str,req: requests, flag: str) -> None:
+    "The function checks which flag is selected and will write if the flag is 1 or 2"
+
+    if 0 < int(flag) < 3:
+        write_image(file_name,req)
+    elif int(flag) > 3:
+        print('incorect flag')
+
+def read_file(path: str) -> list:
+    "the function reads information from a file into a list"
+
+    path = os.path.normpath(path)
+    list_url = open(path, 'r')
+    list_url = [line.strip() for line in list_url]
+    return list_url
+
+def write_log(list_log: list) -> None:
+    "this is the function of writing information to logs"
+
+    headers = ['URL', 'NAME_FILE', 'TIME_SAVE', 'STATUS', 'COMPLITE']
+    with open('logs.csv', 'a') as my_logs:
+        writer = csv.writer(my_logs)
+        file_is_empty = os.stat('logs.csv').st_size == 0
+        if file_is_empty:
+            writer.writerow(headers)
+        writer.writerow(list_log)
 
 def main():
     try:
         parser = argparse.ArgumentParser()
-        parser.add_argument('-u', '--url', required=True)
-        parser.add_argument('-fl', '--flag', default=1, required=False)
+        parser.add_argument('-u', '--url', required=False)
+        parser.add_argument('-fl', '--flag', default='1', required=False)
+        parser.add_argument('-pt', '--path', required=False)
         args = parser.parse_args()
-        req = requests.get(args.url, stream=True)
-        content = req.headers['Content-Type'].split('/')[0]
-        valid_status(req.status_code)
-        valid_content(content)
-        file_name = req.url.split('/')[-1]
-        file_name_2 = file_name.split('.')[0] + '_' + datetime.datetime.now().strftime('%Y-%m-%d') + file_name[-5:]
 
-        if int(args.flag) == 1:
-            write_image(file_name, req)
-        elif int(args.flag) == 2:
-            write_image(file_name_2, req)
-        elif int(args.flag) == 3:
-            sys.exit(0)
-        else:
-            print('incorrect flag')
+        if (args.url and args.path) or (not args.url and not args.path):
+            print('Not one of the parameters is specified or both are specified')
+        elif args.url:
+            valid_flag(args.flag)
+            req = requests.get(args.url, stream=True)
+            valid_status(req.status_code)
+            valid_content(req.headers['Content-Type'].split('/')[0])
+            file_name = create_file_name(req,args.flag)
+            time_save = datetime.now()
+            prepare(file_name,req, args.flag)
+            list_log = [req.url, file_name, time_save, req.status_code,valid_status(req.status_code)]
+            write_log(list_log)
+        elif args.path:
+            list_urls = read_file(args.path)
+            for url in list_urls:
+                try:
+                    req2 = requests.get(url, stream=True)
+                    valid_status(req2.status_code)
+                    valid_content(req2.headers['Content-Type'].split('/')[0])
+                    file_name = create_file_name(req2,args.flag)
+                    prepare(file_name, req2, args.flag)
+                    time_save = datetime.now()
+                    list_log = [req2.url, file_name, time_save, req2.status_code, valid_status(req2.status_code)]
+                    write_log(list_log)
+                except StatusError:
+                    print('check the request is correct')
+                    continue
+                except ContentError:
+                    print(f'content not image')
+                    continue
+                except MissingSchema:
+                    print(f'error in URL')
+                    continue
 
     except MissingSchema:
-        print(f'error in URL')
-    except StatusError as error:
-        print(f'check the request is correct: {error}',  end='\n\n')
-    except ContentError as err:
-        print(f'content is not an image: {err}', end='\n\n')
-
-
+       print(f'error in URL')
+    except ContentError:
+        print(f'content not image')
+    except StatusError:
+        print('check the request is correct')
+    except ValueError:
+        print('flag not number')
 
 if __name__ == '__main__':
     #doctest.testmod()
     main()
-
-
-
