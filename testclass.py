@@ -2,7 +2,6 @@ import unittest
 from task_02 import valid_status, valid_content, valid_flag
 import task_02
 import requests
-from excepion import StatusError, ContentError
 
 class Test_function(unittest.TestCase):
 
@@ -19,12 +18,12 @@ class Test_function(unittest.TestCase):
 
     def test_valid_status(self):
         self.assertEqual(valid_status(self.req.status_code), True), 'test status no passed'
-        self.assertRaises(StatusError, valid_status,self.req2.status_code), 'test status no passed'
+        self.assertEqual(valid_status(self.req2.status_code), False), 'test status no passed'
 
 
     def test_valid_content(self):
         self.assertEqual(valid_content(self.content1), True), 'test content no passed'
-        self.assertRaises(ContentError, valid_content, self.content2), 'test status no passed'
+        self.assertEqual(valid_content(self.content2), False), 'test status no passed'
 
 
     def test_valid_flag(self):

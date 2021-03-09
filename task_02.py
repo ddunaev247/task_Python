@@ -10,9 +10,7 @@ from datetime import datetime
 import argparse
 from requests.exceptions import MissingSchema
 import csv
-from excepion import *
 import doctest
-
 
 
 def valid_status(code: requests) -> bool:
@@ -22,7 +20,8 @@ def valid_status(code: requests) -> bool:
     """
 
     if 400 <= code < 600:
-        raise StatusError
+        print(f'unsuccessful download request:{code}')
+        return False
     return True
 
 def valid_content(content: requests) -> bool:
@@ -32,7 +31,8 @@ def valid_content(content: requests) -> bool:
     """
 
     if content != 'image':
-        raise ContentError
+        print(f'the content is not an image, type content: {content}')
+        return False
     return True
 
 def valid_flag(flag: str) -> bool:
@@ -95,7 +95,7 @@ def read_file(path: str) -> list:
 def write_log(list_log: list) -> None:
     "this is the function of writing information to logs"
 
-    headers = ['URL', 'NAME_FILE', 'TIME_SAVE', 'STATUS', 'COMPLITE']
+    headers = ['URL', 'NAME_FILE', 'TIME_SAVE', 'STATUS_CODE', 'COMPLITE']
     with open('logs.csv', 'a') as my_logs:
         writer = csv.writer(my_logs)
         file_is_empty = os.stat('logs.csv').st_size == 0
@@ -103,56 +103,50 @@ def write_log(list_log: list) -> None:
             writer.writerow(headers)
         writer.writerow(list_log)
 
+def parameter_check(args: argparse) -> list:
+    "the function will check what parameters were specified and return the list of links"
+
+    if (args.url and args.path) or (not args.url and not args.path):
+        print('Not one of the parameters is specified or both are specified')
+    elif args.url:
+        list_urls = [args.url]
+    elif args.path:
+        list_urls = read_file(args.path)
+    return list_urls
+
+def process_image(url: str,args: argparse) -> None:
+    "the function will launch all the necessary functions for working with images"
+
+    req = requests.get(url, stream=True)
+    valid_status(req.status_code)
+    valid_content(req.headers['Content-Type'].split('/')[0])
+    file_name = create_file_name(req, args.flag)
+    time_save = datetime.now()
+    list_log = [req.url, file_name, time_save, req.status_code,
+                valid_status(req.status_code),valid_content(req.headers['Content-Type'].split('/')[0])]
+    write_log(list_log)
+    prepare(file_name, req, args.flag)
+
+
 def main():
-    try:
         parser = argparse.ArgumentParser()
         parser.add_argument('-u', '--url', required=False)
         parser.add_argument('-fl', '--flag', default='1', required=False)
         parser.add_argument('-pt', '--path', required=False)
         args = parser.parse_args()
-
-        if (args.url and args.path) or (not args.url and not args.path):
-            print('Not one of the parameters is specified or both are specified')
-        elif args.url:
-            valid_flag(args.flag)
-            req = requests.get(args.url, stream=True)
-            valid_status(req.status_code)
-            valid_content(req.headers['Content-Type'].split('/')[0])
-            file_name = create_file_name(req,args.flag)
-            time_save = datetime.now()
-            prepare(file_name,req, args.flag)
-            list_log = [req.url, file_name, time_save, req.status_code,valid_status(req.status_code)]
-            write_log(list_log)
-        elif args.path:
-            list_urls = read_file(args.path)
-            for url in list_urls:
-                try:
-                    req2 = requests.get(url, stream=True)
-                    valid_status(req2.status_code)
-                    valid_content(req2.headers['Content-Type'].split('/')[0])
-                    file_name = create_file_name(req2,args.flag)
-                    prepare(file_name, req2, args.flag)
-                    time_save = datetime.now()
-                    list_log = [req2.url, file_name, time_save, req2.status_code, valid_status(req2.status_code)]
-                    write_log(list_log)
-                except StatusError:
-                    print('check the request is correct')
-                    continue
-                except ContentError:
-                    print(f'content not image')
-                    continue
-                except MissingSchema:
-                    print(f'error in URL')
-                    continue
-
-    except MissingSchema:
-       print(f'error in URL')
-    except ContentError:
-        print(f'content not image')
-    except StatusError:
-        print('check the request is correct')
-    except ValueError:
-        print('flag not number')
+        list_urls = parameter_check(args)
+        number_url = 0
+        for url in list_urls:
+            try:
+                number_url += 1
+                process_image(url, args)
+            except MissingSchema or OSError:
+                error_for_log = [url,'No',datetime.now(), 'No', 'not transferred URL']
+                write_log(error_for_log)
+                print(f'error in URL №{number_url}')
+                continue
+            except ValueError:
+                print('incorect flag')
 
 if __name__ == '__main__':
     #doctest.testmod()
