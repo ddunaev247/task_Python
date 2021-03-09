@@ -1,0 +1,35 @@
+body {
+    border-style: solid;
+    border-width: 1px;
+}
+div.top_panel {
+    display: grid;
+    grid-template-columns: 15% 85%;
+}
+
+.menu {
+    margin-outside: 300px;
+    outline-style: solid;
+    outline-width: 1px;
+    outline-offset: 10px;
+    margin-left: 10px;
+}
+
+.page {
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+}
+
+div.page > div {
+    border-style: solid;
+    border-width: 1px;
+}
+.company {
+    padding: 25px;
+    font: caption;
+}
+
+.back {
+    text-align: center;
+    margin-top: 200px;
+}
