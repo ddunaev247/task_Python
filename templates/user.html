@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Profile</title>
-</head>
-<body>
-    <div>Привет, {{ name }}! Сейчас: {{ info_time }} </div>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %} Профиль пользователя - {{ name }} {% endblock %}
+
+{% block left %}
+    <div class="content_list">
+    {% include "users.html" %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="content_list"">Привет, {{ name }}! Твой возраст: {{ age }} Сейчас: {{ info_time }} </div>
+{% endblock %}
+
+{% block right %}
+    <div class="content_list">
+    {% if not img %}
+        {% set img = 'https://cdn.pixabay.com/photo/2021/01/05/06/40/boat-5889919_1280.png' %}
+    {% endif %}
+    <img src="{{ img }}">
+    </div>
+{% endblock %}

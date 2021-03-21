@@ -1,0 +1,42 @@
+body{
+    background: url(fon.png) no-repeat;
+    background-size: 100%;
+
+
+}
+.header{
+    border-style: solid;
+    border-width: 1px;
+    padding-top: 3px;
+}
+
+.menu{
+    outline-style: solid;
+    outline-width: 1px;
+    outline-offset: 3px;
+}
+
+.page{
+    display: grid;
+    grid-template-columns: 15%70%15%;
+}
+
+.content_center{
+    text-align: center;
+}
+
+.content_list{
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.users{
+    margin-left: 10px;
+}
+
+.footer{
+    margin-top: 200px;
+    text-align: center;
+
+}

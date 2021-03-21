@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for( 'static', filename='reset.css')}}">
+    <link rel="stylesheet" href="{{ url_for( 'static', filename='style.css')}}">
+    <title>{% block title %} Title {% endblock %}</title>
+</head>
+<body>
+    {% block header %}
+        <div class="header">
+            {% include "menu.html" %}
+        </div>
+    {% endblock %}
+    <div class="page">
+    {% block left %}
+        <div> </div>
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% block right %}
+        <div> </div>
+    {% endblock %}
+    </div>
+    {% block footer %}
+        <div class="footer"> footer </div>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<div class="users">Пользователи:
+    <ul>
+    {% if users %}
+        {% for key, value in users.items() %}
+            {% set url,name = key, value['name'] %}
+            <li><a href="{{ url_for('user',name=url) }}">{{ name }}</a></li>
+        {% endfor %}
+        {% else %}
+        <li>Нет пользователей</li>
+        </ul>
+    {% endif %}
+</div>
